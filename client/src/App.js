@@ -1,24 +1,22 @@
 import './App.css';
-import {BrowserRouter} from "react-router-dom";
-import NavBar from "./components/NavBar/NavBar";
-import useRoutes from './routes'
-import {AuthContext} from "./context/auth";
-import {useAuth} from "./hooks/auth";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import RegistrationPage from "./pages/RegistrationPage";
+import MainPage from "./pages/MainPage/MainPage";
+import NavBar from "./component/NavBar/NavBar";
 
 function App() {
-    const {login, logout, isReady, userId, token} = useAuth()
-    const isLogin = !!token
-    const routes = useRoutes(isLogin)
-
     return (
-        <AuthContext.Provider value={{login, logout, isReady, userId, token, isLogin}}>
             <div className="App">
+                <NavBar/>
                 <BrowserRouter>
-                    <NavBar/>
-                    {routes}
+                    <Switch>
+                        <Route path='/' exact component={MainPage}/>
+                        <Route path='/login' component={LoginPage}/>
+                        <Route path='/registration' component={RegistrationPage}/>
+                    </Switch>
                 </BrowserRouter>
             </div>
-        </AuthContext.Provider>
     );
 }
 

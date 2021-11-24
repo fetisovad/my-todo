@@ -1,0 +1,21 @@
+.mt-150 {
+    margin-top: 150px;
+}
+.ta-s {
+    text-align: start;
+}
+.ml-a {
+    margin-left: auto;
+}
+.b {
+    border: 2px solid black !important;
+}
+.df {
+    display: flex;
+}
+.mb-15 {
+    margin-bottom: 15px;
+}
+.mb-50 {
+    margin-bottom: 50px !important;
+}
