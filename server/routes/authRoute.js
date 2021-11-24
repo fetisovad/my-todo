@@ -46,6 +46,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json('Пароль неверный')
         }
 
+        res.json({userId: user.id})
         return res.status(201).json('Вход выполнен')
     } catch (e) {
         console.log(e)

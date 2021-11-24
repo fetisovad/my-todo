@@ -12,6 +12,8 @@ const LoginPage = () => {
         password: ''
     })
 
+    const [userId, setUserId] = useState(null)
+
     const handleChangeForm = (e) => {
         setFormData({
             ...formData,
@@ -26,7 +28,9 @@ const LoginPage = () => {
             }
         })
             .then((res) => {
-                console.log(res.data)
+                const id = res.data
+                setUserId({id})
+
                 history.push('/')
             })
             .catch((e) => {
