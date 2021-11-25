@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import './LoginPage.css'
 import axios from "axios";
@@ -8,7 +8,7 @@ import {AuthContext} from "../../context/AuthContext";
 
 const LoginPage = () => {
     const history = useHistory()
-    const {login, logout} = useAuth(AuthContext)
+    const {login} = useAuth(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
         password: ''

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import {useAuth} from "../../hooks/useAuth";
 import {AuthContext} from "../../context/AuthContext";
@@ -7,16 +7,7 @@ const NavBar = () => {
     const {logout} = useAuth(AuthContext)
     const [isLogin, setIsLogin] = useState(false)
 
-   // const checkIsLogin = () => {
-   //     const item = JSON.parse(localStorage.getItem('userId'))
-   //     if(!item) {
-   //         return null
-   //     }
-   //     setIsLogin(item.isLogin)
-   // }
-
     useEffect(() => {
-        // checkIsLogin()
         const item = JSON.parse(localStorage.getItem('userId'))
         if(!item) {
             return null
