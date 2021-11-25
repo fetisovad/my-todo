@@ -1,15 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './MainPage.css'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 
 const MainPage = () => {
     const history = useHistory()
-    const [todos, setTodos] = useState([
-        {text: 'todo 1', id: 1, done: false},
-        {text: 'todo 2', id: 2, done: false},
-        {text: 'todo 3', id: 3, done: false}
-    ])
+    const [todos, setTodos] = useState([])
     const [todo, setTodo] = useState('')
 
     const isLogin = true
@@ -19,10 +15,8 @@ const MainPage = () => {
 
     const handleAddTodo = async (req, res) => {
         const {userId} = JSON.parse(localStorage.getItem('userId'))
-        console.log(userId)
         const todoItem = {
             text: todo, userId
-            // text: todo
         }
 
         await axios.post('/api/todo/add', {todoItem}, {
@@ -33,6 +27,23 @@ const MainPage = () => {
             .then(res => console.log(res))
             .catch(e => console.log(e))
     }
+
+    const getTodo = async () => {
+        const {userId} = JSON.parse(localStorage.getItem('userId'))
+
+        await axios.get('/api/todo/', {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            params: {userId}
+        })
+            .then(res => setTodos(res.data))
+            .catch(e => console.log(e))
+    }
+
+    useEffect(() => {
+        getTodo()
+    }, [getTodo])
 
     return (
         <div className='container'>

@@ -31,7 +31,6 @@ router.post('/registration', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const {email, password} = req.body.formData
-        console.log(email, password)
 
         const isUser = await User.findOne({where:{email}})
         if(!isUser) {
@@ -39,7 +38,6 @@ router.post('/login', async (req, res) => {
         }
 
         const user = await User.findOne({where:{email}})
-        console.log(user)
 
         const unHashPassword = await bcrypt.compare(password, user.password)
         if(!unHashPassword) {
