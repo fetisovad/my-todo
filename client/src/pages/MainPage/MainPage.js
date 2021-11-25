@@ -14,6 +14,9 @@ const MainPage = () => {
     }
 
     const getTodo = useCallback(async () => {
+        if(!JSON.parse(localStorage.getItem('userId'))){
+            return history.push('/login')
+        }
         const {userId} = JSON.parse(localStorage.getItem('userId'))
 
         await axios.get('/api/todo/', {
