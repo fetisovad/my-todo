@@ -18,9 +18,11 @@ const MainPage = () => {
     }
 
     const handleAddTodo = async (req, res) => {
+        const {userId} = JSON.parse(localStorage.getItem('userId'))
+        console.log(userId)
         const todoItem = {
-            // text: todo, userId
-            text: todo
+            text: todo, userId
+            // text: todo
         }
 
         await axios.post('/api/todo/add', {todoItem}, {
