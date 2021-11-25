@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
 import './LoginPage.css'
 import axios from "axios";
 import {useHistory} from 'react-router-dom'
+import {useAuth} from "../../hooks/useAuth";
+import {AuthContext} from "../../context/AuthContext";
 
 const LoginPage = () => {
     const history = useHistory()
-
+    const {login, logout} = useAuth(AuthContext)
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     })
-
-    const [userId, setUserId] = useState(null)
 
     const handleChangeForm = (e) => {
         setFormData({
@@ -28,8 +28,11 @@ const LoginPage = () => {
             }
         })
             .then((res) => {
-                const id = res.data
-                setUserId({id})
+                const userId = res.data.userId
+                login(JSON.stringify({
+                    userId,
+                    isLogin: true
+                }))
 
                 history.push('/')
             })

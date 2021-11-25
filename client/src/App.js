@@ -4,9 +4,14 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import MainPage from "./pages/MainPage/MainPage";
 import NavBar from "./component/NavBar/NavBar";
+import {AuthContext} from "./context/AuthContext";
+import {useAuth} from "./hooks/useAuth";
 
 function App() {
+    const {login, logout, isLogin} = useAuth()
+
     return (
+        <AuthContext.Provider value={{login, logout, isLogin}}>
             <div className="App">
                 <BrowserRouter>
                     <NavBar/>
@@ -17,6 +22,7 @@ function App() {
                     </Switch>
                 </BrowserRouter>
             </div>
+        </AuthContext.Provider>
     );
 }
 
