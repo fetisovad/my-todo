@@ -16,6 +16,22 @@ const User = sequelize.define('User', {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    secondName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    patronymic: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    executive: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 })
 
@@ -26,7 +42,7 @@ const Todo = sequelize.define('Todo', {
         autoIncrement: true,
         allowNull: false
     },
-    text: {
+    title: {
         type: DataTypes.STRING,
     },
     userId: {
@@ -34,6 +50,15 @@ const Todo = sequelize.define('Todo', {
     },
     done: {
         type: DataTypes.BOOLEAN
+    },
+    description: {
+        type: DataTypes.STRING,
+    },
+    priority: {
+        type: DataTypes.STRING,
+    },
+    status: {
+        type: DataTypes.STRING
     }
 })
 

@@ -16,6 +16,9 @@
 .mb-15 {
     margin-bottom: 15px;
 }
+.mt-15 {
+    margin-top: 15px;
+}
 .mb-50 {
     margin-bottom: 50px !important;
 }
@@ -35,10 +38,21 @@
     padding: 20px;
 }
 .description {
-    min-height: 200px;
+    height: 100px;
     resize: none;
 }
 .column {
     display: flex;
     flex-direction: column;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+}
+.w-50 {
+    width: 50%;
+}
+.openModal {
+    position: relative;
+    background: #61dafb;
 }

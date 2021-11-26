@@ -5,12 +5,15 @@ const router = Router()
 
 router.post('/add', async (req, res) => {
    try {
-       const {text, userId} = req.body.todoItem
+       const {title, userId, description, status, priority} = req.body.todoItem
 
        await Todo.create({
-           text,
+           title,
            done: false,
-           userId
+           userId,
+           description,
+           status,
+           priority
        })
 
        res.status(201).json('Todo added')
@@ -57,6 +60,18 @@ router.put('/complete/:id', async (req, res) => {
         res.json(todo)
     } catch (e) {
         console.log({e})
+    }
+})
+
+router.get('/edit/:id', async (req, res) => {
+    try {
+        const {id} = req.query
+        const todo = await Todo.findByPk(id)
+
+        res.json(todo)
+
+    } catch (e) {
+        console.log(e)
     }
 })
 

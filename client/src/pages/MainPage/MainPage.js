@@ -4,18 +4,31 @@ import {useHistory} from "react-router-dom";
 import axios from "axios";
 
 const MainPage = (factory, deps) => {
+
+
     const history = useHistory()
     const [todos, setTodos] = useState([])
-    const [todo, setTodo] = useState('')
+    const [todo, setTodo] = useState({
+        title: '',
+        description: '',
+        priority: 'Средний',
+        status: 'К выполнению',
+    })
+
+    const status = ["К выполнению", "Выполняется", "Выполнена", "Отменена"]
+    const priority = ["Высокий", "Средний", "Низкий"]
+
+    console.log({todo})
+
     const [openModal, setOpenModal] = useState(false)
 
     const isLogin = true
-    if(!isLogin) {
+    if (!isLogin) {
         history.push('/login')
     }
 
     const getTodo = useCallback(async () => {
-        if(!JSON.parse(localStorage.getItem('userId'))){
+        if (!JSON.parse(localStorage.getItem('userId'))) {
             return history.push('/login')
         }
         const {userId} = JSON.parse(localStorage.getItem('userId'))
@@ -34,9 +47,15 @@ const MainPage = (factory, deps) => {
 
     const handleAddTodo = useCallback(async (req, res) => {
         const {userId} = JSON.parse(localStorage.getItem('userId'))
+        console.log('todo ' + todo)
         const todoItem = {
-            text: todo, userId
+            title: todo.title,
+            description: todo.description,
+            userId,
+            priority: todo.priority,
+            status: todo.status
         }
+        console.log('todoItem ' + todoItem)
 
         await axios.post('/api/todo/add', {todoItem}, {
             headers: {
@@ -45,7 +64,11 @@ const MainPage = (factory, deps) => {
         })
             .then((res) => {
                 console.log('Add TODO')
-                setTodo('')
+                setTodo({
+                    title: '',
+                    description: ''
+                })
+                handleOpenModal()
                 getTodo()
             })
             .catch(e => console.log(e))
@@ -82,9 +105,22 @@ const MainPage = (factory, deps) => {
     }
 
     const handleOpenModal = () => {
-        console.log('open modal')
+        let body = window.document.body.className
         setOpenModal(!openModal)
-        console.log(openModal)
+        body === 'openModal' ? body = 'z-1' : body = 'openModal'
+    }
+
+    const handleEditTodo = async (id) => {
+        handleOpenModal()
+
+        await axios.get(`api/todo/edit/${id}`, {
+            headers: {
+                'Content-type': 'application/json'
+            },
+            params: {id}
+        })
+            .then(res => setTodo(res.data))
+            .catch(e => console.log(e))
     }
 
     return (
@@ -92,17 +128,13 @@ const MainPage = (factory, deps) => {
             <h1>Список задач</h1>
 
             <div className="input-group mb-3 mb-50">
-                {/*<input name='text' type="text" className="form-control" placeholder="Введите задачу"*/}
-                {/*       aria-label="Recipient's username" aria-describedby="button-addon2"*/}
-                {/*       onChange={(e) => setTodo(e.target.value)}*/}
-                {/*       value={todo}*/}
-                {/*/>*/}
-                    <button
-                        className="btn btn-outline-secondary"
-                        type="button"
-                        // onClick={handleAddTodo}
-                        onClick={handleOpenModal}
-                    >Добавить задачу</button>
+                <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    // onClick={handleAddTodo}
+                    onClick={handleOpenModal}
+                >Добавить задачу
+                </button>
             </div>
             {openModal && (
                 <div className='modalWindow'>
@@ -110,41 +142,78 @@ const MainPage = (factory, deps) => {
                     <form onSubmit={event => event.preventDefault()}>
                         <div className="mb-3">
                             <label htmlFor="text" className="form-label">Заголовок</label>
-                            <input type="email" className="form-control" id="exampleInputEmail1"
-                                   aria-describedby="emailHelp"
-                            name='text'/>
+                            <input name='text' type="text" className="form-control"
+                                   aria-label="Recipient's username" aria-describedby="button-addon2"
+                                   onChange={(e) => setTodo({...todo, title: e.target.value})}
+                                   value={todo.title}
+                            />
                         </div>
                         <div className="mb-3 column">
                             <label htmlFor="description" className="form-label">Описание</label>
-                            <textarea className='description' name="description" id="description" cols="30" rows="10">
-
-                            </textarea>
+                            <textarea className='description'
+                                      name="description"
+                                      id="description"
+                                      onChange={(e) => setTodo({...todo, description: e.target.value})}
+                                      value={todo.description}
+                                      cols="30" rows="10"/>
                         </div>
-                        <button type="submit" className="btn btn-primary">Submit</button>
                     </form>
+                    <div className='row'>
+                        <ul className="list-group list-group-flush w-50">
+                            <span className='mb-15'>Приоритет</span>
+                            {priority.map((priority) => (
+                                <a role='button'
+                                   key={priority}
+                                   className={todo.priority === priority ? "list-group-item active" : "list-group-item"}
+                                   onClick={() => setTodo({...todo, priority: priority})}
+                                >{priority}</a>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="modal-footer mt-15">
+                        <button type="button" className="btn btn-primary"
+                                onClick={handleAddTodo}
+                        >Сохранить изменения
+                        </button>
+                        <button type="button"
+                                className="btn btn-secondary"
+                                onClick={handleOpenModal}
+                        >Отменить
+                        </button>
+                    </div>
                 </div>
             )}
 
             <ul className="list-group list-group-numbered">
-                {todos.map((todo, index) => {
-                    return (
+                {todos.length
+                    ?
+                    todos.map((todo, index) => (
                         <li key={todo.id}
                             className={todo.done ? "list-group-item ta-s b df mb-15 done" : "list-group-item ta-s b df mb-15"}
-                        >{todo.text}
+                        >{todo.title}
                             <div className='ml-a'>
                                 <button type='button'
                                         className='btn btn-success'
                                         onClick={() => handleDoneTodo(todo.id)}
-                                >Выполнено</button>
-                                <button type='button' className='btn btn-secondary'>Редактировать</button>
+                                >Выполнено
+                                </button>
+                                <button
+                                    type='button'
+                                    className='btn btn-secondary'
+                                    onClick={() => handleEditTodo(todo.id)}
+                                >Редактировать
+                                </button>
                                 <button type='button'
                                         className='btn btn-danger'
                                         onClick={() => handleDelete(todo.id)}
-                                >Удалить</button>
+                                >Удалить
+                                </button>
                             </div>
                         </li>
-                    )
-                })}
+                    ))
+                    :
+                    (<p>Задач пока нет</p>)
+                }
             </ul>
         </div>
     );

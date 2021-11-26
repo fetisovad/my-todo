@@ -6,7 +6,7 @@ const router = Router()
 
 router.post('/registration', async (req, res) => {
    try {
-       const {email, password} = req.body.dataForm
+       const {email, password, name, secondName, executive, patronymic} = req.body.dataForm
        console.log(email, password)
 
        const isUser = await User.findOne({where:{email}})
@@ -18,7 +18,11 @@ router.post('/registration', async (req, res) => {
 
        await User.create({
            email,
-           password: hashPassword
+           password: hashPassword,
+           name,
+           secondName,
+           executive,
+           patronymic
        })
 
        return res.status(201).json('Регистрация прошла успешно')
