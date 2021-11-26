@@ -3,10 +3,11 @@ import './MainPage.css'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 
-const MainPage = () => {
+const MainPage = (factory, deps) => {
     const history = useHistory()
     const [todos, setTodos] = useState([])
     const [todo, setTodo] = useState('')
+    const [openModal, setOpenModal] = useState(false)
 
     const isLogin = true
     if(!isLogin) {
@@ -80,20 +81,50 @@ const MainPage = () => {
             .catch(e => console.log({e}))
     }
 
+    const handleOpenModal = () => {
+        console.log('open modal')
+        setOpenModal(!openModal)
+        console.log(openModal)
+    }
+
     return (
         <div className='container'>
-            <div className="input-group mb-3 mt-150 mb-50">
-                <input name='text' type="text" className="form-control" placeholder="Введите задачу"
-                       aria-label="Recipient's username" aria-describedby="button-addon2"
-                       onChange={(e) => setTodo(e.target.value)}
-                       value={todo}
-                />
+            <h1>Список задач</h1>
+
+            <div className="input-group mb-3 mb-50">
+                {/*<input name='text' type="text" className="form-control" placeholder="Введите задачу"*/}
+                {/*       aria-label="Recipient's username" aria-describedby="button-addon2"*/}
+                {/*       onChange={(e) => setTodo(e.target.value)}*/}
+                {/*       value={todo}*/}
+                {/*/>*/}
                     <button
                         className="btn btn-outline-secondary"
                         type="button"
-                        onClick={handleAddTodo}
-                    >Создать</button>
+                        // onClick={handleAddTodo}
+                        onClick={handleOpenModal}
+                    >Добавить задачу</button>
             </div>
+            {openModal && (
+                <div className='modalWindow'>
+                    <h4>Добавить задачу</h4>
+                    <form onSubmit={event => event.preventDefault()}>
+                        <div className="mb-3">
+                            <label htmlFor="text" className="form-label">Заголовок</label>
+                            <input type="email" className="form-control" id="exampleInputEmail1"
+                                   aria-describedby="emailHelp"
+                            name='text'/>
+                        </div>
+                        <div className="mb-3 column">
+                            <label htmlFor="description" className="form-label">Описание</label>
+                            <textarea className='description' name="description" id="description" cols="30" rows="10">
+
+                            </textarea>
+                        </div>
+                        <button type="submit" className="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            )}
+
             <ul className="list-group list-group-numbered">
                 {todos.map((todo, index) => {
                     return (

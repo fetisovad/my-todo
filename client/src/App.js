@@ -8,10 +8,10 @@ import {AuthContext} from "./context/AuthContext";
 import {useAuth} from "./hooks/useAuth";
 
 function App() {
-    const {login, logout, isLogin} = useAuth()
+    const {login, logout} = useAuth()
 
     return (
-        <AuthContext.Provider value={{login, logout, isLogin}}>
+        <AuthContext.Provider value={{login, logout}}>
             <div className="App">
                 <BrowserRouter>
                     <NavBar/>

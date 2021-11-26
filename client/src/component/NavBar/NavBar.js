@@ -1,19 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Link} from "react-router-dom";
 import {useAuth} from "../../hooks/useAuth";
 import {AuthContext} from "../../context/AuthContext";
 
 const NavBar = () => {
-    const {logout} = useAuth(AuthContext)
-    const [isLogin, setIsLogin] = useState(false)
-
-    useEffect(() => {
-        const item = JSON.parse(localStorage.getItem('userId'))
-        if(!item) {
-            return null
-        }
-        setIsLogin(item.isLogin)
-    }, [isLogin, setIsLogin])
+    const {logout, isLogin} = useAuth(AuthContext)
 
     return (
         <div>

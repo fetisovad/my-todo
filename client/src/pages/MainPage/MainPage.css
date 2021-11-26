@@ -22,3 +22,23 @@
 .done {
     background: khaki;
 }
+.modalWindow {
+    width: 600px;
+    height: 600px;
+    border: 1px solid black;
+    margin: 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%,0);
+    z-index: 1;
+    background: aliceblue;
+    padding: 20px;
+}
+.description {
+    min-height: 200px;
+    resize: none;
+}
+.column {
+    display: flex;
+    flex-direction: column;
+}
