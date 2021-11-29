@@ -32,6 +32,9 @@ const User = sequelize.define('User', {
     executive: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    role: {
+        type: DataTypes.STRING
     }
 })
 
@@ -59,6 +62,12 @@ const Todo = sequelize.define('Todo', {
     },
     status: {
         type: DataTypes.STRING
+    },
+    author: {
+        type: DataTypes.JSON
+    },
+    responsible: {
+        type: DataTypes.JSON
     }
 })
 

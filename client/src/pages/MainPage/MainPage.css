@@ -37,8 +37,8 @@
     display: flex;
     flex-direction: row;
 }
-.w-50 {
-    width: 50%;
+.w-45 {
+    width: 45%;
 }
 .body-enable {
     display: none;

@@ -2,6 +2,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import './MainPage.css'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
+// import formatter from "../../utils/formatDate";
+import {formatDate} from "../../utils/formatDate";
 
 const MainPage = () => {
     const history = useHistory()
@@ -16,6 +18,10 @@ const MainPage = () => {
         priority: 'Средний',
         status: 'К выполнению',
     })
+
+    const date = '2021.11.11 09:27:21'
+    console.log(new Date(date).toLocaleString())
+
 
     const status = ["К выполнению", "Выполняется", "Выполнена", "Отменена"]
     const priority = ["Высокий", "Средний", "Низкий"]
@@ -39,7 +45,7 @@ const MainPage = () => {
             params: {userId}
         })
             .then(res => {
-                setTodos(res.data.reverse())
+                setTodos(res.data.todos.reverse())
             })
             .catch(e => console.log(e))
     }, [setTodos])
@@ -109,6 +115,7 @@ const MainPage = () => {
     }
 
     const handleEditTodo = async (id) => {
+
         setIsEdit(true)
         handleOpenModal()
 
@@ -131,6 +138,12 @@ const MainPage = () => {
             .then(res => {
                 console.log(res)
                 handleOpenModal()
+                setTodo({
+                    title: '',
+                    description: '',
+                    priority: 'Средний',
+                    status: 'К выполнению',
+                })
                 getTodo()
             })
             .catch(e => console.log(e))
@@ -138,7 +151,7 @@ const MainPage = () => {
 
     return (
         <div className='container'>
-            <div className={bodyCls} />
+            <div className={bodyCls}/>
             <h1>Список задач</h1>
             <div className="input-group mb-3 mb-50">
                 <button
@@ -170,17 +183,40 @@ const MainPage = () => {
                                       cols="30" rows="10"/>
                         </div>
                     </form>
-                    <div className='row'>
-                        <ul className="list-group list-group-flush w-50">
+                    <div className='row' style={{justifyContent: 'flex-start'}}>
+                        <ul className="list-group list-group-flush w-45"
+                            style={{padding: 0}}>
                             <span className='mb-15'>Приоритет</span>
                             {priority.map((priority) => (
-                                <a role='button'
-                                   key={priority}
-                                   className={todo.priority === priority ? "list-group-item active" : "list-group-item"}
-                                   onClick={() => setTodo({...todo, priority: priority})}
+                                <a
+                                    style={{width: '100%'}}
+                                    role='button'
+                                    key={priority}
+                                    className={todo.priority === priority ? "list-group-item active" : "list-group-item"}
+                                    onClick={() => setTodo({...todo, priority: priority})}
                                 >{priority}</a>
                             ))}
                         </ul>
+                        {isEdit
+                            ?
+                            <ul className="list-group list-group-flush w-45"
+                                style={{padding: 0, marginLeft: 'auto'}}>
+                                <span className='mb-15'>Статус</span>
+                                {status.map((status) => (
+                                    <a
+                                        style={{width: '100%'}}
+                                        role='button'
+                                        key={status}
+                                        className={todo.status === status ? "list-group-item active" : "list-group-item"}
+                                        onClick={() => setTodo({...todo, status: status})}
+                                    >
+                                        {status}
+                                    </a>
+                                ))}
+                            </ul>
+                            :
+                            null
+                        }
                     </div>
                     <div className="modal-footer mt-15">
                         {isEdit
@@ -191,7 +227,7 @@ const MainPage = () => {
                             </button>
                             :
                             <button type="button" className="btn btn-primary"
-                                     onClick={handleAddTodo}
+                                    onClick={handleAddTodo}
                             >Добавить задачу
                             </button>
                         }
@@ -220,48 +256,55 @@ const MainPage = () => {
                             className={todo.done ? "card border-success mb-3 done " : "card border-success mb-3 "}
                             style={{display: 'flex', flexDirection: 'column'}}
                         >
-                                <ul className="card-header bg-transparent border-success"
-                                     style={{display: 'flex', listStyle: 'none'}}
-                                >
-                                    <li>Дата создания: 2020-12-12 17-15</li>
-                                    <li style={{marginLeft: '20px'}}>Дата изменения: 2020-12-12 17-15</li>
-                                    <li style={{marginLeft: 'auto'}}>{todo.priority}</li>
-                                </ul>
-                                <div className="card-body text-success"
-                                    style={{display: 'flex', flexDirection: 'column', alignItems: "start"}}
-                                >
-                                    <h4 className="card-title">{todo.title}</h4>
-                                    <p className="card-text">{todo.description}</p>
+                            <ul className="card-header bg-transparent border-success"
+                                style={{display: 'flex', listStyle: 'none'}}
+                            >
+                                <li>Дата создания: {formatDate(todo.createdAt)}</li>
+                                <li style={{marginLeft: '20px'}}>Дата
+                                    изменения: {formatDate(todo.updatedAt)}</li>
+                                <li style={{marginLeft: '20px'}}>Дата
+                                    окончания: {formatDate(date)}</li>
+                                <li style={{marginLeft: 'auto'}}>{todo.priority}</li>
+                                <li style={{marginLeft: 'auto'}}>{todo.status}</li>
+                            </ul>
+                            <div className="card-body text-success"
+                                 style={{display: 'flex', flexDirection: 'column', alignItems: "start"}}
+                            >
+                                <h4 className="card-title"
+                                    style={{maxWidth: '100%', textAlign: 'left'}}>{todo.title}</h4>
+                                <p className="card-text"
+                                   style={{maxWidth: '100%', textAlign: 'left'}}>{todo.description}</p>
+                            </div>
+                            <div className="card-footer bg-transparent border-success"
+                                 style={{display: 'flex'}}
+                            >
+                                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                                    <span
+                                        style={{marginRight: '10px'}}>Создатель: {todo.author.name} {todo.author.secondName}</span>
+                                    <span>Ответственный: {todo.responsible.name} {todo.responsible.secondName}</span>
                                 </div>
-                                <div className="card-footer bg-transparent border-success"
-                                    style={{display: 'flex'}}
-                                >
-                                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
-                                        <span style={{marginRight: '10px'}}>Создатель: Александр Фетисов</span>
-                                        <span>Ответственный: Александр Фетисов</span>
-                                    </div>
-                                    <div className='ml-a'>
-                                        <button type='button'
-                                                className='btn btn-success'
-                                                style={{marginLeft: '10px'}}
-                                                onClick={() => handleDoneTodo(todo.id)}
-                                        >Выполнено
-                                        </button>
-                                        <button
-                                            type='button'
-                                            className='btn btn-secondary'
+                                <div className='ml-a'>
+                                    <button type='button'
+                                            className='btn btn-success'
                                             style={{marginLeft: '10px'}}
-                                            onClick={() => handleEditTodo(todo.id)}
-                                        >Редактировать
-                                        </button>
-                                        <button type='button'
-                                                className='btn btn-danger'
-                                                style={{marginLeft: '10px'}}
-                                                onClick={() => handleDelete(todo.id)}
-                                        >Удалить
-                                        </button>
-                                    </div>
+                                            onClick={() => handleDoneTodo(todo.id)}
+                                    >Выполнено
+                                    </button>
+                                    <button
+                                        type='button'
+                                        className='btn btn-secondary'
+                                        style={{marginLeft: '10px'}}
+                                        onClick={() => handleEditTodo(todo.id)}
+                                    >Редактировать
+                                    </button>
+                                    <button type='button'
+                                            className='btn btn-danger'
+                                            style={{marginLeft: '10px'}}
+                                            onClick={() => handleDelete(todo.id)}
+                                    >Удалить
+                                    </button>
                                 </div>
+                            </div>
                         </li>
                     ))
                     :

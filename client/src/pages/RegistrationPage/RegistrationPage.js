@@ -10,7 +10,8 @@ const RegistrationPage = () => {
         secondName: '',
         name: '',
         patronymic: '',
-        executive: 'Руководитель 2'
+        executive: 'Руководитель 2',
+        role: 'USER'
     })
 
     console.log(dataForm)
@@ -23,7 +24,7 @@ const RegistrationPage = () => {
     }
 
 
-    const handleRegistration = async (req, res) => {
+    const handleRegistration = async () => {
         await axios.post('/api/auth/registration', {dataForm}, {
             headers: {
                 'Content-Type': 'application/json'
@@ -91,20 +92,38 @@ const RegistrationPage = () => {
                         onChange={handleChangeForm}
                     />
                 </div>
-                <div style={{display: 'flex'}} className='mb-3'>
-                    <div className="form-check">
-                        <input style={{marginRight: '15px'}} className="form-check-input" type="radio" name="executive" id="executive1"
-                               value='Руководитель 1' onChange={(e) => setDataForm({...dataForm, executive: e.target.value})}/>
-                        <label style={{marginRight: '10px'}} className="form-check-label" htmlFor="executive1">
-                            Руководитель 1
-                        </label>
+                <div style={{display: 'flex', justifyContent: 'space-between'}} className='mb-3'>
+                    <div style={{display: 'flex'}}>
+                        <div className="form-check">
+                            <input style={{marginRight: '15px'}} className="form-check-input" type="radio" name="executive" id="executive1"
+                                   value='Руководитель 1' onChange={(e) => setDataForm({...dataForm, executive: e.target.value})}/>
+                            <label style={{marginRight: '10px'}} className="form-check-label" htmlFor="executive1">
+                                Руководитель 1
+                            </label>
+                        </div>
+                        <div className="form-check">
+                            <input style={{marginRight: '15px'}} className="form-check-input" type="radio" name="executive" id="executive2"
+                                   value='Руководитель 2' onChange={(e) => setDataForm({...dataForm, executive: e.target.value})} defaultChecked/>
+                            <label style={{marginRight: '10px'}} className="form-check-label" htmlFor="executive2">
+                                Руководитель 2
+                            </label>
+                        </div>
                     </div>
-                    <div className="form-check">
-                        <input style={{marginRight: '15px'}} className="form-check-input" type="radio" name="executive" id="executive2"
-                               value='Руководитель 2' onChange={(e) => setDataForm({...dataForm, executive: e.target.value})} defaultChecked/>
-                        <label style={{marginRight: '10px'}} className="form-check-label" htmlFor="executive2">
-                            Руководитель 2
-                        </label>
+                    <div style={{display: 'flex'}}>
+                        <div className="form-check" >
+                            <input style={{marginRight: '15px'}} className="form-check-input" type="radio" name="role" id="admin"
+                                   value='ADMIN' onChange={(e) => setDataForm({...dataForm, role: e.target.value})}/>
+                            <label style={{marginRight: '10px'}} className="form-check-label" htmlFor="admin">
+                                ADMIN
+                            </label>
+                        </div>
+                        <div className="form-check" >
+                            <input style={{marginRight: '15px'}} className="form-check-input" type="radio" name="role" id="user"
+                                   value='USER' onChange={(e) => setDataForm({...dataForm, role: e.target.value})} defaultChecked/>
+                            <label style={{marginRight: '10px'}} className="form-check-label" htmlFor="user">
+                                USER
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div className="mb-3 form-check">

@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const {Todo} = require("../models/models");
+const {Todo, User} = require("../models/models");
 
 const router = Router()
 
@@ -7,13 +7,17 @@ router.post('/add', async (req, res) => {
    try {
        const {title, userId, description, status, priority} = req.body.todoItem
 
+       const user = await User.findByPk(userId)
+
        await Todo.create({
            title,
            done: false,
            userId,
            description,
            status,
-           priority
+           priority,
+           author: user,
+           responsible: user
        })
 
        res.status(201).json('Todo added')
@@ -27,8 +31,9 @@ router.get('/', async (req, res) => {
         const {userId} = req.query
 
         const todos = await Todo.findAll({where:{userId}})
+        const user = await User.findByPk(userId)
 
-        res.json(todos)
+        res.json({todos, user})
     } catch (e) {
         console.log(e)
     }
@@ -84,6 +89,7 @@ router.put('/edit/:id', async (req, res) => {
        dbTodo.title = todo.title
        dbTodo.description = todo.description
        dbTodo.priority = todo.priority
+       dbTodo.status = todo.status
 
        await dbTodo.save()
 
