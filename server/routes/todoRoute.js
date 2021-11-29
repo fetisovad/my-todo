@@ -75,4 +75,22 @@ router.get('/edit/:id', async (req, res) => {
     }
 })
 
+router.put('/edit/:id', async (req, res) => {
+   try {
+       const todo = req.body.todo
+       console.log(todo.id)
+
+       const  dbTodo = await Todo.findByPk(todo.id)
+       dbTodo.title = todo.title
+       dbTodo.description = todo.description
+       dbTodo.priority = todo.priority
+
+       await dbTodo.save()
+
+       res.json(dbTodo)
+   } catch (e) {
+       console.log(e)
+   }
+})
+
 module.exports= router

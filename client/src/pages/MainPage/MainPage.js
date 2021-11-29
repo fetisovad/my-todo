@@ -3,11 +3,12 @@ import './MainPage.css'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 
-const MainPage = (factory, deps) => {
-
-
+const MainPage = () => {
     const history = useHistory()
     const [todos, setTodos] = useState([])
+    const [isEdit, setIsEdit] = useState(false)
+    const [openModal, setOpenModal] = useState(false)
+    const [isLogin, setIsLogin] = useState(true)
     const [todo, setTodo] = useState({
         title: '',
         description: '',
@@ -20,9 +21,6 @@ const MainPage = (factory, deps) => {
 
     console.log({todo})
 
-    const [openModal, setOpenModal] = useState(false)
-
-    const isLogin = true
     if (!isLogin) {
         history.push('/login')
     }
@@ -111,6 +109,7 @@ const MainPage = (factory, deps) => {
     }
 
     const handleEditTodo = async (id) => {
+        setIsEdit(true)
         handleOpenModal()
 
         await axios.get(`api/todo/edit/${id}`, {
@@ -120,6 +119,20 @@ const MainPage = (factory, deps) => {
             params: {id}
         })
             .then(res => setTodo(res.data))
+            .catch(e => console.log(e))
+    }
+
+    const handleSaveEditTodo = (id) => {
+        axios.put(`/api/todo/edit/${id}`, {todo}, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => {
+                console.log(res)
+                handleOpenModal()
+                getTodo()
+            })
             .catch(e => console.log(e))
     }
 
@@ -171,13 +184,30 @@ const MainPage = (factory, deps) => {
                         </ul>
                     </div>
                     <div className="modal-footer mt-15">
-                        <button type="button" className="btn btn-primary"
-                                onClick={handleAddTodo}
-                        >Сохранить изменения
-                        </button>
+                        {isEdit
+                            ?
+                            <button type="button" className="btn btn-primary"
+                                    onClick={() => handleSaveEditTodo(todo.id)}
+                            >Сохранить задачу
+                            </button>
+                            :
+                            <button type="button" className="btn btn-primary"
+                                     onClick={handleAddTodo}
+                            >Добавить задачу
+                            </button>
+                        }
                         <button type="button"
                                 className="btn btn-secondary"
-                                onClick={handleOpenModal}
+                                onClick={() => {
+                                    handleOpenModal()
+                                    setIsEdit(false)
+                                    setTodo({
+                                        title: '',
+                                        description: '',
+                                        priority: 'Средний',
+                                        status: 'К выполнению',
+                                    })
+                                }}
                         >Отменить
                         </button>
                     </div>
