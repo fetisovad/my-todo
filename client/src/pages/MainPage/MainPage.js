@@ -8,6 +8,7 @@ const MainPage = () => {
     const [todos, setTodos] = useState([])
     const [isEdit, setIsEdit] = useState(false)
     const [openModal, setOpenModal] = useState(false)
+    const [bodyCls, setBodyCls] = useState('body-enable')
     const [isLogin, setIsLogin] = useState(true)
     const [todo, setTodo] = useState({
         title: '',
@@ -103,9 +104,8 @@ const MainPage = () => {
     }
 
     const handleOpenModal = () => {
-        let body = window.document.body.className
         setOpenModal(!openModal)
-        body === 'openModal' ? body = 'z-1' : body = 'openModal'
+        bodyCls === 'body-enable' ? setBodyCls('body-disable') : setBodyCls('body-enable')
     }
 
     const handleEditTodo = async (id) => {
@@ -138,13 +138,12 @@ const MainPage = () => {
 
     return (
         <div className='container'>
+            <div className={bodyCls} />
             <h1>Список задач</h1>
-
             <div className="input-group mb-3 mb-50">
                 <button
                     className="btn btn-outline-secondary"
                     type="button"
-                    // onClick={handleAddTodo}
                     onClick={handleOpenModal}
                 >Добавить задачу
                 </button>
@@ -213,32 +212,56 @@ const MainPage = () => {
                     </div>
                 </div>
             )}
-
-            <ul className="list-group list-group-numbered">
+            <ul className="list-group">
                 {todos.length
                     ?
                     todos.map((todo, index) => (
                         <li key={todo.id}
-                            className={todo.done ? "list-group-item ta-s b df mb-15 done" : "list-group-item ta-s b df mb-15"}
-                        >{todo.title}
-                            <div className='ml-a'>
-                                <button type='button'
-                                        className='btn btn-success'
-                                        onClick={() => handleDoneTodo(todo.id)}
-                                >Выполнено
-                                </button>
-                                <button
-                                    type='button'
-                                    className='btn btn-secondary'
-                                    onClick={() => handleEditTodo(todo.id)}
-                                >Редактировать
-                                </button>
-                                <button type='button'
-                                        className='btn btn-danger'
-                                        onClick={() => handleDelete(todo.id)}
-                                >Удалить
-                                </button>
-                            </div>
+                            className={todo.done ? "card border-success mb-3 done " : "card border-success mb-3 "}
+                            style={{display: 'flex', flexDirection: 'column'}}
+                        >
+                                <ul className="card-header bg-transparent border-success"
+                                     style={{display: 'flex', listStyle: 'none'}}
+                                >
+                                    <li>Дата создания: 2020-12-12 17-15</li>
+                                    <li style={{marginLeft: '20px'}}>Дата изменения: 2020-12-12 17-15</li>
+                                    <li style={{marginLeft: 'auto'}}>{todo.priority}</li>
+                                </ul>
+                                <div className="card-body text-success"
+                                    style={{display: 'flex', flexDirection: 'column', alignItems: "start"}}
+                                >
+                                    <h4 className="card-title">{todo.title}</h4>
+                                    <p className="card-text">{todo.description}</p>
+                                </div>
+                                <div className="card-footer bg-transparent border-success"
+                                    style={{display: 'flex'}}
+                                >
+                                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                                        <span style={{marginRight: '10px'}}>Создатель: Александр Фетисов</span>
+                                        <span>Ответственный: Александр Фетисов</span>
+                                    </div>
+                                    <div className='ml-a'>
+                                        <button type='button'
+                                                className='btn btn-success'
+                                                style={{marginLeft: '10px'}}
+                                                onClick={() => handleDoneTodo(todo.id)}
+                                        >Выполнено
+                                        </button>
+                                        <button
+                                            type='button'
+                                            className='btn btn-secondary'
+                                            style={{marginLeft: '10px'}}
+                                            onClick={() => handleEditTodo(todo.id)}
+                                        >Редактировать
+                                        </button>
+                                        <button type='button'
+                                                className='btn btn-danger'
+                                                style={{marginLeft: '10px'}}
+                                                onClick={() => handleDelete(todo.id)}
+                                        >Удалить
+                                        </button>
+                                    </div>
+                                </div>
                         </li>
                     ))
                     :

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Link} from "react-router-dom";
 import {useAuth} from "../../hooks/useAuth";
 import {AuthContext} from "../../context/AuthContext";
 
 const NavBar = () => {
-    const {logout, isLogin} = useAuth(AuthContext)
+    const {logout, isLogin, login} = useAuth(AuthContext)
 
     return (
         <div>
