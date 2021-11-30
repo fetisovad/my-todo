@@ -15,11 +15,13 @@ const MainPage = () => {
     const [openModal, setOpenModal] = useState(false);
     const [bodyCls, setBodyCls] = useState('body-enable');
     const [isLogin, setIsLogin] = useState(true);
+    const [startDate, setStartDate] = useState(new Date());
     const [todo, setTodo] = useState({
         title: '',
         description: '',
         priority: 'Средний',
         status: 'К выполнению',
+        endDate: ''
     });
 
     console.log({todo});
@@ -60,6 +62,7 @@ const MainPage = () => {
                 userId,
                 priority: todo.priority,
                 status: todo.status,
+                endDate: todo.endDate
             };
             console.log('todoItem ' + todoItem);
 
@@ -251,16 +254,20 @@ const MainPage = () => {
                                     {priority}
                                 </a>
                             ))}
-                            {/*<span style={{marginTop: '10px'}}>*/}
-                            {/*    Выберите дату окончания*/}
-                            {/*</span>*/}
-                            {/*<DatePicker*/}
-                            {/*    onChange={(date) => console.log(date)}*/}
-                            {/*    timeFormat="HH:mm"*/}
-                            {/*    showTimeSelect*/}
-                            {/*    timeIntervals={15}*/}
-                            {/*    dateFormat="dd.MM.yyyy hh:mm"*/}
-                            {/*/>*/}
+                            <span style={{marginTop: '10px'}}>
+                                Выберите дату окончания
+                            </span>
+                            <DatePicker
+                                selected={startDate}
+                                onChange={(date) => {
+                                    setTodo({...todo, endDate: date})
+                                    setStartDate(date)
+                                }}
+                                showTimeSelect
+                                timeFormat="HH:mm"
+                                timeIntervals={15}
+                                dateFormat="dd.MM.yyyy HH:mm"
+                            />
                         </ul>
                         {isEdit ? (
                             <ul
