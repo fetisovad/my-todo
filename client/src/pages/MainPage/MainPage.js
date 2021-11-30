@@ -78,6 +78,8 @@ const MainPage = () => {
                     setTodo({
                         title: '',
                         description: '',
+                        priority: 'Средний',
+                        status: 'К выполнению',
                     });
                     handleOpenModal();
                     getTodo();
@@ -97,7 +99,10 @@ const MainPage = () => {
                 },
                 params: {id},
             })
-            .then((res) => getTodo())
+            .then((res) => {
+                getTodo()
+                setIsEdit(false)
+            })
             .catch((e) => console.log(e));
     };
 
