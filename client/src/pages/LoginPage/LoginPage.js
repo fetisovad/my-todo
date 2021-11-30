@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
-import './LoginPage.css'
 import axios from "axios";
 import {useHistory} from 'react-router-dom'
 import {useAuth} from "../../hooks/useAuth";
@@ -69,7 +68,8 @@ const LoginPage = () => {
                 <div className="mb-3 form-check">
                     <button
                         type="submit"
-                        className="btn btn-primary mr-20"
+                        style={{marginRight: '20px'}}
+                        className="btn btn-primary"
                         onClick={handleLogin}
                     >Войти
                     </button>

@@ -1,8 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
+
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css'
+
 import './MainPage.css';
 import {useHistory} from 'react-router-dom';
 import axios from 'axios';
-// import formatter from "../../utils/formatDate";
 import {formatDate} from '../../utils/formatDate';
 
 const MainPage = () => {
@@ -19,13 +22,11 @@ const MainPage = () => {
         status: 'К выполнению',
     });
 
-    const date = '2021.11.11 09:27:21';
-    console.log(new Date(date).toLocaleString());
+    console.log({todo});
 
     const status = ['К выполнению', 'Выполняется', 'Выполнена', 'Отменена'];
     const priority = ['Высокий', 'Средний', 'Низкий'];
 
-    console.log({todo});
 
     if (!isLogin) {
         history.push('/login');
@@ -50,8 +51,7 @@ const MainPage = () => {
             .catch((e) => console.log(e));
     }, [setTodos]);
 
-    const handleAddTodo = useCallback(
-        async (req, res) => {
+    const handleAddTodo = async () => {
             const {userId} = JSON.parse(localStorage.getItem('userId'));
             console.log('todo ' + todo);
             const todoItem = {
@@ -83,9 +83,7 @@ const MainPage = () => {
                     getTodo();
                 })
                 .catch((e) => console.log(e));
-        },
-        [todos, todo, getTodo]
-    );
+    };
 
     useEffect(() => {
         getTodo();
@@ -173,7 +171,7 @@ const MainPage = () => {
         <div className="container">
             <div className={bodyCls}/>
             <h1>Список задач</h1>
-            <div className="input-group mb-3 mb-50">
+            <div className="input-group mb-3" style={{marginBottom: '50px'}}>
                 <button
                     className="btn btn-outline-secondary"
                     type="button"
@@ -202,7 +200,8 @@ const MainPage = () => {
                                 value={todo.title}
                             />
                         </div>
-                        <div className="mb-3 column">
+                        <div className="mb-3"
+                             style={{display: 'flex',flexDirection: 'column'}}>
                             <label htmlFor="description" className="form-label">
                                 Описание
                             </label>
@@ -223,14 +222,13 @@ const MainPage = () => {
                         </div>
                     </form>
                     <div
-                        className="row"
-                        style={{justifyContent: 'flex-start'}}
+                        style={{display: 'flex', justifyContent: 'flex-start'}}
                     >
                         <ul
-                            className="list-group list-group-flush w-45"
-                            style={{padding: 0}}
+                            className="list-group list-group-flush"
+                            style={{padding: 0, width: '47%'}}
                         >
-                            <span className="mb-15">Приоритет</span>
+                            <span style={{marginBottom: '15px'}}>Приоритет</span>
                             {priority.map((priority) => (
                                 <a
                                     style={{width: '100%'}}
@@ -248,13 +246,23 @@ const MainPage = () => {
                                     {priority}
                                 </a>
                             ))}
+                            {/*<span style={{marginTop: '10px'}}>*/}
+                            {/*    Выберите дату окончания*/}
+                            {/*</span>*/}
+                            {/*<DatePicker*/}
+                            {/*    onChange={(date) => console.log(date)}*/}
+                            {/*    timeFormat="HH:mm"*/}
+                            {/*    showTimeSelect*/}
+                            {/*    timeIntervals={15}*/}
+                            {/*    dateFormat="dd.MM.yyyy hh:mm"*/}
+                            {/*/>*/}
                         </ul>
                         {isEdit ? (
                             <ul
-                                className="list-group list-group-flush w-45"
-                                style={{padding: 0, marginLeft: 'auto'}}
+                                className="list-group list-group-flush"
+                                style={{padding: 0, marginLeft: 'auto', width: '47%'}}
                             >
-                                <span className="mb-15">Статус</span>
+                                <span style={{marginBottom: '15px'}}>Статус</span>
                                 {status.map((status) => (
                                     <a
                                         style={{width: '100%'}}
@@ -275,7 +283,7 @@ const MainPage = () => {
                             </ul>
                         ) : null}
                     </div>
-                    <div className="modal-footer mt-15">
+                    <div className="modal-footer" style={{marginTop: '15px'}}>
                         {isEdit ? (
                             <button
                                 type="button"
@@ -317,11 +325,7 @@ const MainPage = () => {
                     todos.map((todo, index) => (
                         <li
                             key={todo.id}
-                            className={
-                                todo.done
-                                    ? 'card border-success mb-3 done '
-                                    : 'card border-success mb-3 '
-                            }
+                            className={'card border-success mb-3'}
                             style={{display: 'flex', flexDirection: 'column'}}
                         >
                             <ul
@@ -335,7 +339,7 @@ const MainPage = () => {
                                     Дата изменения: {formatDate(todo.updatedAt)}
                                 </li>
                                 <li style={{marginLeft: '20px'}}>
-                                    Дата окончания: {formatDate(date)}
+                                    Дата окончания: {formatDate(todo.endDate)}
                                 </li>
                                 <li style={{marginLeft: 'auto'}}>
                                     {todo.priority}
@@ -345,15 +349,16 @@ const MainPage = () => {
                                 </li>
                             </ul>
                             <div
-                                className="card-body text-success"
+                                className="card-body text-secondary"
                                 style={{
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'start',
+                                    color: 'black'
                                 }}
                             >
                                 <h4
-                                    className="card-title"
+                                    className={todo.done ? "card-title done" :"card-title"}
                                     style={{
                                         maxWidth: '100%',
                                         textAlign: 'left',
@@ -391,7 +396,7 @@ const MainPage = () => {
                                         {todo.responsible.secondName}
                                     </span>
                                 </div>
-                                <div className="ml-a">
+                                <div style={{marginLeft: 'auto'}}>
                                     <button
                                         type="button"
                                         className="btn btn-success"
