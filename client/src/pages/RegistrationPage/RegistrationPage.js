@@ -14,7 +14,6 @@ const RegistrationPage = () => {
         role: 'USER'
     })
 
-    console.log(dataForm)
 
     const handleChangeForm = (event) => {
         setDataForm({
@@ -31,7 +30,6 @@ const RegistrationPage = () => {
             }
         })
             .then((res) => {
-                console.log(res.data)
                 history.push('/login')
             })
             .catch((e) => {

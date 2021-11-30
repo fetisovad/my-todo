@@ -22,8 +22,6 @@ const MainPage = () => {
         endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
     });
 
-    console.log({todo});
-    console.log(todo.endDate);
 
     const status = ['К выполнению', 'Выполняется', 'Выполнена', 'Отменена'];
     const priority = ['Высокий', 'Средний', 'Низкий'];
@@ -54,7 +52,6 @@ const MainPage = () => {
 
     const handleAddTodo = async () => {
             const {userId} = JSON.parse(localStorage.getItem('userId'));
-            console.log('todo ' + todo);
             const todoItem = {
                 title: todo.title,
                 description: todo.description,
@@ -63,7 +60,6 @@ const MainPage = () => {
                 status: todo.status,
                 endDate: todo.endDate
             };
-            console.log('todoItem ' + todoItem);
 
             await axios
                 .post(
@@ -76,7 +72,6 @@ const MainPage = () => {
                     }
                 )
                 .then((res) => {
-                    console.log('Add TODO');
                     setTodo({
                         title: '',
                         description: '',
@@ -109,7 +104,6 @@ const MainPage = () => {
                     ...todo,
                     endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
                 })
-
                 getTodo()
                 setIsEdit(false)
             })
@@ -129,7 +123,6 @@ const MainPage = () => {
                 }
             )
             .then((res) => {
-                console.log(res);
                 getTodo();
             })
             .catch((e) => console.log({e}));
@@ -171,7 +164,6 @@ const MainPage = () => {
                 }
             )
             .then((res) => {
-                console.log(res);
                 handleOpenModal();
                 setTodo({
                     title: '',
