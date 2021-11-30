@@ -1,8 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
-
 import './MainPage.css';
 import {useHistory} from 'react-router-dom';
 import axios from 'axios';
@@ -21,10 +19,11 @@ const MainPage = () => {
         description: '',
         priority: 'Средний',
         status: 'К выполнению',
-        endDate: ''
+        endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
     });
 
     console.log({todo});
+    console.log(todo.endDate);
 
     const status = ['К выполнению', 'Выполняется', 'Выполнена', 'Отменена'];
     const priority = ['Высокий', 'Средний', 'Низкий'];
@@ -91,7 +90,7 @@ const MainPage = () => {
     };
 
     useEffect(() => {
-        getTodo();
+        getTodo()
     }, [getTodo]);
 
     const handleDelete = async (id) => {
@@ -146,7 +145,9 @@ const MainPage = () => {
                 },
                 params: {id},
             })
-            .then((res) => setTodo(res.data))
+            .then((res) => {
+                setTodo({...res.data, endDate: new Date(res.data.endDate)})
+            })
             .catch((e) => console.log(e));
     };
 
@@ -258,7 +259,7 @@ const MainPage = () => {
                                 Выберите дату окончания
                             </span>
                             <DatePicker
-                                selected={startDate}
+                                selected={todo.endDate}
                                 onChange={(date) => {
                                     setTodo({...todo, endDate: date})
                                     setStartDate(date)
