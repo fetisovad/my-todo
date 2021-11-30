@@ -82,7 +82,9 @@ const MainPage = () => {
                         description: '',
                         priority: 'Средний',
                         status: 'К выполнению',
+                        endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
                     });
+                    setStartDate(new Date())
                     handleOpenModal();
                     getTodo();
                 })
@@ -102,6 +104,12 @@ const MainPage = () => {
                 params: {id},
             })
             .then((res) => {
+                setStartDate(new Date())
+                setTodo({
+                    ...todo,
+                    endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
+                })
+
                 getTodo()
                 setIsEdit(false)
             })
@@ -325,7 +333,10 @@ const MainPage = () => {
                                     description: '',
                                     priority: 'Средний',
                                     status: 'К выполнению',
+                                    endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
+
                                 });
+                                setStartDate(new Date())
                             }}
                         >
                             Отменить
