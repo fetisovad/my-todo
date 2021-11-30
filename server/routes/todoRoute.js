@@ -5,7 +5,7 @@ const router = Router()
 
 router.post('/add', async (req, res) => {
    try {
-       const {title, userId, description, status, priority} = req.body.todoItem
+       const {title, userId, description, status, priority, endDate} = req.body.todoItem
 
        const user = await User.findByPk(userId)
 
@@ -17,9 +17,9 @@ router.post('/add', async (req, res) => {
            status,
            priority,
            author: user,
-           responsible: user
+           responsible: user,
+           endDate
        })
-
        res.status(201).json('Todo added')
    } catch (e) {
        console.log(e)
@@ -90,6 +90,7 @@ router.put('/edit/:id', async (req, res) => {
        dbTodo.description = todo.description
        dbTodo.priority = todo.priority
        dbTodo.status = todo.status
+       dbTodo.endDate = todo.endDate
 
        await dbTodo.save()
 

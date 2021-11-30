@@ -68,7 +68,11 @@ const Todo = sequelize.define('Todo', {
     },
     responsible: {
         type: DataTypes.JSON
+    },
+    endDate: {
+        type: DataTypes.DATE
     }
+
 })
 
 module.exports = {
