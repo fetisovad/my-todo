@@ -53,6 +53,9 @@ const MainPage = () => {
 
     const handleAddTodo = async () => {
             const {userId} = JSON.parse(localStorage.getItem('userId'));
+            if(!todo.title || !todo.description) {
+                return alert('Заполните форму')
+            }
             const todoItem = {
                 title: todo.title,
                 description: todo.description,
