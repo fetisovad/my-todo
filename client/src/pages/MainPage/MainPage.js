@@ -10,6 +10,7 @@ import _ from 'lodash'
 const MainPage = () => {
     const history = useHistory();
     const [todos, setTodos] = useState([]);
+    const [filteredTodos, setFilteredTodos] = useState([]);
     const [isEdit, setIsEdit] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [bodyCls, setBodyCls] = useState('body-enable');
@@ -214,20 +215,26 @@ const MainPage = () => {
                 >
                     <button type="button"
                             onClick={() => {
-                                setTodos(todos.filter(todo => new Date(todo.endDate).getDate() === new Date(Date.now()).getDate()))
+                                setFilteredTodos(todos.filter(todo => new Date(todo.endDate).getDate() === new Date(Date.now()).getDate()))
                             }}
                             className="btn btn-outline-primary"
                     >Задачи на сегодня</button>
                     <button type="button"
-                            onClick={() => {console.log('Задачи на неделю')}}
+                            onClick={() => {
+                                setFilteredTodos(todos.filter(todo => new Date(todo.endDate).getDate() <= new Date(Date.now()).getDate()  + 7))
+                            }}
                             className="btn btn-outline-primary"
                     >Задачи на неделю</button>
                     <button type="button"
-                            onClick={() => {console.log('Задачи более чем на неделю')}}
+                            onClick={() => {
+                                console.log('Задачи более чем на неделю')
+                                setFilteredTodos(todos.filter(todo => new Date(todo.endDate).getDate() > new Date(Date.now()).getDate()  + 7))
+                                console.log(filteredTodos)
+                            }}
                             className="btn btn-outline-primary"
                     >Задачи более чем на неделю</button>
                     <button type="button"
-                            onClick={() => getTodo()}
+                            onClick={() => setFilteredTodos([])}
                             className="btn btn-outline-primary"
                     >Все задачи</button>
                 </div>
@@ -383,8 +390,8 @@ const MainPage = () => {
             )}
 
             <ul className="list-group">
-                {todos.length ? (
-                    todos.map((todo, index) => (
+                {filteredTodos.length ? (
+                    filteredTodos.map((todo, index) => (
                         <li
                             key={todo.id}
                             className={'card border-success mb-3'}
@@ -489,7 +496,110 @@ const MainPage = () => {
                         </li>
                     ))
                 ) : (
-                    <p>Задач пока нет</p>
+                    todos.map((todo, index) => (
+                        <li
+                            key={todo.id}
+                            className={'card border-success mb-3'}
+                            style={{display: 'flex', flexDirection: 'column'}}
+                        >
+                            <ul
+                                className="card-header bg-transparent border-success"
+                                style={{display: 'flex', listStyle: 'none'}}
+                            >
+                                <li>
+                                    Дата создания: {formatDate(todo.createdAt)}
+                                </li>
+                                <li style={{marginLeft: '20px'}}>
+                                    Дата изменения: {formatDate(todo.updatedAt)}
+                                </li>
+                                <li style={{marginLeft: '20px'}}>
+                                    Дата окончания: {formatDate(todo.endDate)}
+                                </li>
+                                <li style={{marginLeft: 'auto'}}>
+                                    {todo.priority}
+                                </li>
+                                <li style={{marginLeft: 'auto'}}>
+                                    {todo.status}
+                                </li>
+                            </ul>
+                            <div
+                                className="card-body text-secondary"
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'start',
+                                    color: 'black'
+                                }}
+                            >
+                                <h4
+                                    // className={todo.done ? "card-title done" :"card-title"}
+                                    className={colorTitleTodo(todo)}
+                                    style={{
+                                        maxWidth: '100%',
+                                        textAlign: 'left',
+                                    }}
+                                >
+                                    {todo.title}
+                                </h4>
+                                <p
+                                    className="card-text"
+                                    style={{
+                                        maxWidth: '100%',
+                                        textAlign: 'left',
+                                    }}
+                                >
+                                    {todo.description}
+                                </p>
+                            </div>
+                            <div
+                                className="card-footer bg-transparent border-success"
+                                style={{display: 'flex'}}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'start',
+                                    }}
+                                >
+                                    <span style={{marginRight: '10px'}}>
+                                        Создатель: {todo.author.name}{' '}
+                                        {todo.author.secondName}
+                                    </span>
+                                    <span>
+                                        Ответственный: {todo.responsible.name}{' '}
+                                        {todo.responsible.secondName}
+                                    </span>
+                                </div>
+                                <div style={{marginLeft: 'auto'}}>
+                                    <button
+                                        type="button"
+                                        className="btn btn-success"
+                                        style={{marginLeft: '10px'}}
+                                        onClick={() => handleDoneTodo(todo.id)}
+                                    >
+                                        Выполнено
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-secondary"
+                                        style={{marginLeft: '10px'}}
+                                        onClick={() => handleEditTodo(todo.id)}
+                                    >
+                                        Редактировать
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger"
+                                        style={{marginLeft: '10px'}}
+                                        onClick={() => handleDelete(todo.id)}
+                                    >
+                                        Удалить
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    ))
                 )}
             </ul>
         </div>
