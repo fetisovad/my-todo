@@ -402,7 +402,6 @@ const MainPage = () => {
                     </div>
                 </div>
             )}
-            {console.log(filteredTodos)}
             <ul className="list-group">
                 {filteredTodos.length ? (
                     filteredTodos.map((todo, index) => (

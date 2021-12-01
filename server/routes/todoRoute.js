@@ -55,7 +55,6 @@ router.delete('/delete/:id', async (req, res) => {
 router.put('/complete/:id', async (req, res) => {
     try {
         const {id} = req.params
-        console.log(id)
 
         const todo = await Todo.findByPk(id)
         todo.done = !todo.done
@@ -83,7 +82,6 @@ router.get('/edit/:id', async (req, res) => {
 router.put('/edit/:id', async (req, res) => {
    try {
        const todo = req.body.todo
-       console.log(todo.id)
 
        const  dbTodo = await Todo.findByPk(todo.id)
        dbTodo.title = todo.title

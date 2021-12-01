@@ -7,7 +7,6 @@ const router = Router()
 router.post('/registration', async (req, res) => {
    try {
        const {email, password, name, secondName, executive, patronymic, role} = req.body.dataForm
-       console.log(role)
 
        const isUser = await User.findOne({where:{email}})
        if(isUser) {
