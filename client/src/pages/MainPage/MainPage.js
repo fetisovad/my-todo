@@ -48,47 +48,48 @@ const MainPage = () => {
             })
             .then((res) => {
                 setTodos(_.sortBy(res.data.todos, 'updatedAt').reverse());
+                setFilteredTodos(_.sortBy(res.data.todos, 'updatedAt').reverse());
             })
             .catch((e) => console.log(e));
     }, [setTodos]);
 
     const handleAddTodo = async () => {
-            const {userId} = JSON.parse(localStorage.getItem('userId'));
-            if(!todo.title || !todo.description) {
-                return alert('Заполните заголовок и описание')
-            }
-            const todoItem = {
-                title: todo.title,
-                description: todo.description,
-                userId,
-                priority: todo.priority,
-                status: todo.status,
-                endDate: todo.endDate
-            };
+        const {userId} = JSON.parse(localStorage.getItem('userId'));
+        if (!todo.title || !todo.description) {
+            return alert('Заполните заголовок и описание')
+        }
+        const todoItem = {
+            title: todo.title,
+            description: todo.description,
+            userId,
+            priority: todo.priority,
+            status: todo.status,
+            endDate: todo.endDate
+        };
 
-            await axios
-                .post(
-                    '/api/todo/add',
-                    {todoItem},
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                )
-                .then((res) => {
-                    setTodo({
-                        title: '',
-                        description: '',
-                        priority: 'Средний',
-                        status: 'К выполнению',
-                        endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
-                    });
-                    setStartDate(new Date())
-                    handleOpenModal();
-                    getTodo();
-                })
-                .catch((e) => console.log(e));
+        await axios
+            .post(
+                '/api/todo/add',
+                {todoItem},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
+            .then((res) => {
+                setTodo({
+                    title: '',
+                    description: '',
+                    priority: 'Средний',
+                    status: 'К выполнению',
+                    endDate: new Date(Date.now() + 60 * 60 * 24 * 1000)
+                });
+                setStartDate(new Date())
+                handleOpenModal();
+                getTodo();
+            })
+            .catch((e) => console.log(e));
     };
 
     useEffect(() => {
@@ -159,7 +160,7 @@ const MainPage = () => {
 
     const handleSaveEditTodo = (id) => {
 
-        if(!todo.title || !todo.description) {
+        if (!todo.title || !todo.description) {
             return alert('Заполните заголовок и описание')
         }
 
@@ -215,28 +216,41 @@ const MainPage = () => {
                 >
                     <button type="button"
                             onClick={() => {
-                                setFilteredTodos(todos.filter(todo => new Date(todo.endDate).getDate() === new Date(Date.now()).getDate()))
+                                setFilteredTodos(todos.filter(todo =>
+                                    new Date(todo.endDate).getDate() === new Date(Date.now()).getDate()
+                                    && new Date(todo.endDate).getMonth() === new Date(Date.now()).getMonth()
+                                    && new Date(todo.endDate).getFullYear() === new Date(Date.now()).getFullYear()
+                                ))
                             }}
                             className="btn btn-outline-primary"
-                    >Задачи на сегодня</button>
+                    >Задачи на сегодня
+                    </button>
                     <button type="button"
                             onClick={() => {
-                                setFilteredTodos(todos.filter(todo => new Date(todo.endDate).getDate() <= new Date(Date.now()).getDate()  + 7))
+                                setFilteredTodos(todos.filter(todo =>
+                                    new Date(todo.endDate).getDate() <= new Date(Date.now()).getDate() + 7
+                                    && new Date(todo.endDate).getMonth() === new Date(Date.now()).getMonth()
+                                ))
                             }}
                             className="btn btn-outline-primary"
-                    >Задачи на неделю</button>
+                    >Задачи на неделю
+                    </button>
                     <button type="button"
                             onClick={() => {
-                                console.log('Задачи более чем на неделю')
-                                setFilteredTodos(todos.filter(todo => new Date(todo.endDate).getDate() > new Date(Date.now()).getDate()  + 7))
-                                console.log(filteredTodos)
+                                setFilteredTodos(todos.filter(todo =>
+                                    new Date(todo.endDate).getDate() > new Date(Date.now()).getDate() + 7
+                                    && new Date(todo.endDate).getMonth() >= new Date(Date.now()).getMonth()
+                                    || new Date(todo.endDate).getFullYear() > new Date(Date.now()).getFullYear()
+                                ))
                             }}
                             className="btn btn-outline-primary"
-                    >Задачи более чем на неделю</button>
+                    >Задачи более чем на неделю
+                    </button>
                     <button type="button"
-                            onClick={() => setFilteredTodos([])}
+                            onClick={() => setFilteredTodos(todos)}
                             className="btn btn-outline-primary"
-                    >Все задачи</button>
+                    >Все задачи
+                    </button>
                 </div>
             </div>
             {openModal && (
@@ -260,7 +274,7 @@ const MainPage = () => {
                             />
                         </div>
                         <div className="mb-3"
-                             style={{display: 'flex',flexDirection: 'column'}}>
+                             style={{display: 'flex', flexDirection: 'column'}}>
                             <label htmlFor="description" className="form-label">
                                 Описание
                             </label>
@@ -388,7 +402,7 @@ const MainPage = () => {
                     </div>
                 </div>
             )}
-
+            {console.log(filteredTodos)}
             <ul className="list-group">
                 {filteredTodos.length ? (
                     filteredTodos.map((todo, index) => (
@@ -495,112 +509,8 @@ const MainPage = () => {
                             </div>
                         </li>
                     ))
-                ) : (
-                    todos.map((todo, index) => (
-                        <li
-                            key={todo.id}
-                            className={'card border-success mb-3'}
-                            style={{display: 'flex', flexDirection: 'column'}}
-                        >
-                            <ul
-                                className="card-header bg-transparent border-success"
-                                style={{display: 'flex', listStyle: 'none'}}
-                            >
-                                <li>
-                                    Дата создания: {formatDate(todo.createdAt)}
-                                </li>
-                                <li style={{marginLeft: '20px'}}>
-                                    Дата изменения: {formatDate(todo.updatedAt)}
-                                </li>
-                                <li style={{marginLeft: '20px'}}>
-                                    Дата окончания: {formatDate(todo.endDate)}
-                                </li>
-                                <li style={{marginLeft: 'auto'}}>
-                                    {todo.priority}
-                                </li>
-                                <li style={{marginLeft: 'auto'}}>
-                                    {todo.status}
-                                </li>
-                            </ul>
-                            <div
-                                className="card-body text-secondary"
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'start',
-                                    color: 'black'
-                                }}
-                            >
-                                <h4
-                                    // className={todo.done ? "card-title done" :"card-title"}
-                                    className={colorTitleTodo(todo)}
-                                    style={{
-                                        maxWidth: '100%',
-                                        textAlign: 'left',
-                                    }}
-                                >
-                                    {todo.title}
-                                </h4>
-                                <p
-                                    className="card-text"
-                                    style={{
-                                        maxWidth: '100%',
-                                        textAlign: 'left',
-                                    }}
-                                >
-                                    {todo.description}
-                                </p>
-                            </div>
-                            <div
-                                className="card-footer bg-transparent border-success"
-                                style={{display: 'flex'}}
-                            >
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'start',
-                                    }}
-                                >
-                                    <span style={{marginRight: '10px'}}>
-                                        Создатель: {todo.author.name}{' '}
-                                        {todo.author.secondName}
-                                    </span>
-                                    <span>
-                                        Ответственный: {todo.responsible.name}{' '}
-                                        {todo.responsible.secondName}
-                                    </span>
-                                </div>
-                                <div style={{marginLeft: 'auto'}}>
-                                    <button
-                                        type="button"
-                                        className="btn btn-success"
-                                        style={{marginLeft: '10px'}}
-                                        onClick={() => handleDoneTodo(todo.id)}
-                                    >
-                                        Выполнено
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-secondary"
-                                        style={{marginLeft: '10px'}}
-                                        onClick={() => handleEditTodo(todo.id)}
-                                    >
-                                        Редактировать
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-danger"
-                                        style={{marginLeft: '10px'}}
-                                        onClick={() => handleDelete(todo.id)}
-                                    >
-                                        Удалить
-                                    </button>
-                                </div>
-                            </div>
-                        </li>
-                    ))
-                )}
+                ) : (<p>Задачи отсутствуют</p>)
+                }
             </ul>
         </div>
     );
