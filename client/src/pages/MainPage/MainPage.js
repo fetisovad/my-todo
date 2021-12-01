@@ -5,6 +5,7 @@ import './MainPage.css';
 import {useHistory} from 'react-router-dom';
 import axios from 'axios';
 import {formatDate} from '../../utils/formatDate';
+import _ from 'lodash'
 
 const MainPage = () => {
     const history = useHistory();
@@ -45,7 +46,7 @@ const MainPage = () => {
                 params: {userId},
             })
             .then((res) => {
-                setTodos(res.data.todos.reverse());
+                setTodos(_.sortBy(res.data.todos, 'updatedAt').reverse());
             })
             .catch((e) => console.log(e));
     }, [setTodos]);
