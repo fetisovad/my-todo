@@ -54,7 +54,7 @@ const MainPage = () => {
     const handleAddTodo = async () => {
             const {userId} = JSON.parse(localStorage.getItem('userId'));
             if(!todo.title || !todo.description) {
-                return alert('Заполните форму')
+                return alert('Заполните заголовок и описание')
             }
             const todoItem = {
                 title: todo.title,
@@ -157,6 +157,11 @@ const MainPage = () => {
     };
 
     const handleSaveEditTodo = (id) => {
+
+        if(!todo.title || !todo.description) {
+            return alert('Заполните заголовок и описание')
+        }
+
         axios
             .put(
                 `/api/todo/edit/${id}`,
