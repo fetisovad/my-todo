@@ -214,8 +214,7 @@ const MainPage = () => {
                 >
                     <button type="button"
                             onClick={() => {
-                                console.log('Задачи на сегодня')
-
+                                setTodos(todos.filter(todo => new Date(todo.endDate).getDate() === new Date(Date.now()).getDate()))
                             }}
                             className="btn btn-outline-primary"
                     >Задачи на сегодня</button>
@@ -227,6 +226,10 @@ const MainPage = () => {
                             onClick={() => {console.log('Задачи более чем на неделю')}}
                             className="btn btn-outline-primary"
                     >Задачи более чем на неделю</button>
+                    <button type="button"
+                            onClick={() => getTodo()}
+                            className="btn btn-outline-primary"
+                    >Все задачи</button>
                 </div>
             </div>
             {openModal && (
