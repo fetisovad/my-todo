@@ -176,6 +176,16 @@ const MainPage = () => {
             .catch((e) => console.log(e));
     };
 
+    const colorTitleTodo = (todo) => {
+        let cls = 'card-title'
+        if (todo.done) {
+            cls = 'card-title done'
+        } else if (new Date(todo.endDate) < new Date(Date.now())) {
+            cls = 'card-title red'
+        }
+        return cls;
+    }
+
     return (
         <div className="container">
             <div className={bodyCls}/>
@@ -374,7 +384,8 @@ const MainPage = () => {
                                 }}
                             >
                                 <h4
-                                    className={todo.done ? "card-title done" :"card-title"}
+                                    // className={todo.done ? "card-title done" :"card-title"}
+                                    className={colorTitleTodo(todo)}
                                     style={{
                                         maxWidth: '100%',
                                         textAlign: 'left',
