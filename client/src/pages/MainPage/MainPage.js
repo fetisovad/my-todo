@@ -215,9 +215,7 @@ const MainPage = () => {
                     <button type="button"
                             onClick={() => {
                                 console.log('Задачи на сегодня')
-                                todos.map((todo) => {
-                                    todo.endDate === new Date(Date.now()) ? console.log(true) : console.log(false)
-                                })
+
                             }}
                             className="btn btn-outline-primary"
                     >Задачи на сегодня</button>
