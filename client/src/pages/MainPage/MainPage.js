@@ -198,7 +198,7 @@ const MainPage = () => {
     return (
         <div className="container">
             <div className={bodyCls}/>
-            <h1>Список задач</h1>
+            <h1 style={{margin: '30px 0 50px 0'}}>Список задач</h1>
             <div className="input-group mb-3" style={{marginBottom: '50px'}}>
                 <button
                     className="btn btn-outline-secondary"
@@ -207,6 +207,29 @@ const MainPage = () => {
                 >
                     Добавить задачу
                 </button>
+                <div className="btn-group"
+                     role="group"
+                     aria-label="Basic outlined example"
+                     style={{marginLeft: 'auto'}}
+                >
+                    <button type="button"
+                            onClick={() => {
+                                console.log('Задачи на сегодня')
+                                todos.map((todo) => {
+                                    todo.endDate === new Date(Date.now()) ? console.log(true) : console.log(false)
+                                })
+                            }}
+                            className="btn btn-outline-primary"
+                    >Задачи на сегодня</button>
+                    <button type="button"
+                            onClick={() => {console.log('Задачи на неделю')}}
+                            className="btn btn-outline-primary"
+                    >Задачи на неделю</button>
+                    <button type="button"
+                            onClick={() => {console.log('Задачи более чем на неделю')}}
+                            className="btn btn-outline-primary"
+                    >Задачи более чем на неделю</button>
+                </div>
             </div>
             {openModal && (
                 <div className="modalWindow">
@@ -274,20 +297,22 @@ const MainPage = () => {
                                     {priority}
                                 </a>
                             ))}
-                            <span style={{marginTop: '10px'}}>
+                            <div>
+                                <span style={{marginTop: '10px'}}>
                                 Выберите дату окончания
                             </span>
-                            <DatePicker
-                                selected={todo.endDate}
-                                onChange={(date) => {
-                                    setTodo({...todo, endDate: date})
-                                    setStartDate(date)
-                                }}
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={15}
-                                dateFormat="dd.MM.yyyy HH:mm"
-                            />
+                                <DatePicker
+                                    selected={todo.endDate}
+                                    onChange={(date) => {
+                                        setTodo({...todo, endDate: date})
+                                        setStartDate(date)
+                                    }}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="dd.MM.yyyy HH:mm"
+                                />
+                            </div>
                         </ul>
                         {isEdit ? (
                             <ul
@@ -355,6 +380,7 @@ const MainPage = () => {
                     </div>
                 </div>
             )}
+
             <ul className="list-group">
                 {todos.length ? (
                     todos.map((todo, index) => (
